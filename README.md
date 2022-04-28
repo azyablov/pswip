@@ -26,8 +26,10 @@ In params section has only ## of packets that should send against of each target
 Should run with admin priviliges via sudo or admin console.
 
 Usage of pswip:
+  
   -c string
         application config file. (default "pswip.conf")
+  
   -l string
         log file. (default "pswip.log")
 
