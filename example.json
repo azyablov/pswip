@@ -1,0 +1,9 @@
+{
+    "targets": [
+        "8.8.8.8",
+        "google.com"
+        ],
+    "params": {
+        "numofpackets": 2
+    }
+}
