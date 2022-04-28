@@ -1,4 +1,4 @@
-module github/azyablov/pswip
+module github.com/azyablov/pswip
 
 go 1.18
 
