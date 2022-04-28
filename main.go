@@ -83,7 +83,7 @@ func main() {
 			appLogger.Printf("%v\n", err)
 			continue
 		}
-		err = printStats(<-slRCh[i])
+		err = printStats(<-slRCh[i], targets[i])
 		if err != nil {
 			appLogger.Println(err)
 		}
@@ -120,7 +120,7 @@ func pingTarget(t string, p bool, numOfPackets int, ch chan<- *ping.Statistics, 
 	errCh <- nil
 }
 
-func printStats(stats *ping.Statistics) error {
+func printStats(stats *ping.Statistics, t string) error {
 	var color string
 	colorReset := "\033[0m"
 	colorRed := "\033[31m"
@@ -136,7 +136,7 @@ func printStats(stats *ping.Statistics) error {
 	default:
 		return fmt.Errorf("printStats: unexpected stats value for PacketLoss")
 	}
-	fmt.Printf("%vTarget: %v\n", string(color), stats.IPAddr)
+	fmt.Printf("%vTarget: %v\nIP@: %v\n", string(color), t, stats.IPAddr)
 	fmt.Printf("%v %d packets transmitted, %d packets received, %v%% packet loss\n",
 		string(color), stats.PacketsSent, stats.PacketsRecv, stats.PacketLoss)
 	fmt.Printf("%v round-trip min/avg/max/stddev = %v/%v/%v/%v\n%v",
