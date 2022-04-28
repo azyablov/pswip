@@ -2,6 +2,12 @@
 
 Simple multi-threaded cli ICMP ping swip tool for ad-hoc host availability checking.
 
+# Installation 
+
+```sh
+go install github.com/azyablov/pswip@latest
+```
+
 # Config file
 
 Configuration file should be provided in JSON format with simple structure:
