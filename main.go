@@ -14,9 +14,6 @@ import (
 	"github.com/go-ping/ping"
 )
 
-var wg sync.WaitGroup = sync.WaitGroup{}
-var appLogger *log.Logger
-
 type AppParams struct {
 	NumOfPackets int `json:"numofpackets"`
 }
@@ -35,12 +32,13 @@ func main() {
 	flag.StringVar(&logFile, "l", "pswip.log", "log file.")
 	flag.Parse()
 
-	// Logging
+	// Logging setup
 	logfh, err := os.Create(logFile)
 	if err != nil {
 		fmt.Println(err, "\nCan't create log file, switching to STDOUT.")
 	}
-	appLogger = log.New(logfh, "", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile)
+	// Creation of logger
+	var appLogger = log.New(logfh, "", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile)
 	appLogger.Println("App started...")
 
 	// Reading config file
@@ -70,9 +68,10 @@ func main() {
 	}
 
 	// WG setup
+	var wg sync.WaitGroup = sync.WaitGroup{}
 	for i, t := range targets {
 		wg.Add(1)
-		go pingTarget(t, true, ac.Params.NumOfPackets, slRCh[i], slErrCh[i])
+		go pingTarget(t, true, ac.Params.NumOfPackets, slRCh[i], slErrCh[i], wg, appLogger)
 	}
 	wg.Wait()
 
@@ -90,7 +89,7 @@ func main() {
 	}
 }
 
-func pingTarget(t string, p bool, numOfPackets int, ch chan<- *ping.Statistics, errCh chan<- error) {
+func pingTarget(t string, p bool, numOfPackets int, ch chan<- *ping.Statistics, errCh chan<- error, wg sync.WaitGroup, appLogger *log.Logger) {
 	defer wg.Done()
 	defer appLogger.Printf("pingTarget: %v handling is done", t)
 	pinger, err := ping.NewPinger(t)
