@@ -71,7 +71,7 @@ func main() {
 	var wg sync.WaitGroup = sync.WaitGroup{}
 	for i, t := range targets {
 		wg.Add(1)
-		go pingTarget(t, true, ac.Params.NumOfPackets, slRCh[i], slErrCh[i], wg, appLogger)
+		go pingTarget(t, true, ac.Params.NumOfPackets, slRCh[i], slErrCh[i], &wg, appLogger)
 	}
 	wg.Wait()
 
@@ -89,7 +89,7 @@ func main() {
 	}
 }
 
-func pingTarget(t string, p bool, numOfPackets int, ch chan<- *ping.Statistics, errCh chan<- error, wg sync.WaitGroup, appLogger *log.Logger) {
+func pingTarget(t string, p bool, numOfPackets int, ch chan<- *ping.Statistics, errCh chan<- error, wg *sync.WaitGroup, appLogger *log.Logger) {
 	defer wg.Done()
 	defer appLogger.Printf("pingTarget: %v handling is done", t)
 	pinger, err := ping.NewPinger(t)
